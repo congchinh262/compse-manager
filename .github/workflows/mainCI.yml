@@ -31,4 +31,4 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: run stack
-        run: docker-compose -f dev.yml up
+        run: docker-compose -f ./stack1/dev.yml up
