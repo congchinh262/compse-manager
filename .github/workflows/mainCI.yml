@@ -22,7 +22,7 @@ jobs:
       changed-files: ${{ steps.get-changed-file.outputs.changed-file }}
     steps:
       - id: get-changed-file
-        run: echo "::set-output name=changed-file::$(git ls-files -c | grep .yml)"
+        run: echo "::set-output name=changed-file::$(git ls-files -c | grep -i -v -E '.github' | grep .yml)"
   run-stack:
     # The type of runner that the job will run on
     runs-on: self-hosted
@@ -31,4 +31,4 @@ jobs:
     steps:
       - uses: actions/checkout@v2   
       - name: run stack
-        run: docker-compose -f ${{ needs.get-changed-files.outputs.changed-files }} up
+        run: docker-compose -f up ${{ needs.get-changed-files.outputs.changed-files }}
