@@ -29,6 +29,9 @@ jobs:
     needs: get-changed-files
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - uses: actions/checkout@v2   
+      - uses: actions/checkout@v2
+      # down stack before run new stack for prevent memory leak
+      - name: down stack
+        run: docker-compose -f ${{ needs.get-changed-files.outputs.changed-files }} up 
       - name: run stack
         run: docker-compose -f ${{ needs.get-changed-files.outputs.changed-files }} up 
