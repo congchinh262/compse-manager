@@ -16,7 +16,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  get-changed-file:
+  get-changed-files:
     runs-on: self-hosted
     outputs:
       changed-files: ${{ get-changed-files.outputs.changed-file }}
@@ -26,7 +26,7 @@ jobs:
   run-stack:
     # The type of runner that the job will run on
     runs-on: self-hosted
-    needs: get-changed-file
+    needs: get-changed-files
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v2   
