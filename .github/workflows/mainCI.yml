@@ -22,7 +22,7 @@ jobs:
       changed-files: ${{ get-changed-files.outputs.changed-file }}
     steps:
       - id: get-changed-files
-        run: echo "::set-output changed-file=$(git ls-files -c | grep .yml)"
+        run: echo "::set-output name=changed-file::$(git ls-files -c | grep .yml)"
   run-stack:
     # The type of runner that the job will run on
     runs-on: self-hosted
