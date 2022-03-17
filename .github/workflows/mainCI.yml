@@ -31,4 +31,4 @@ jobs:
     steps:
       - uses: actions/checkout@v2   
       - name: run stack
-        run: docker-compose -f up ${{ needs.get-changed-files.outputs.changed-files }}
+        run: docker-compose -f ${{ needs.get-changed-files.outputs.changed-files }} up 
