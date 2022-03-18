@@ -26,6 +26,7 @@ jobs:
     outputs:
       changed-files: ${{ steps.get-changed-files.outputs.changed-file }}
     steps:
+      - uses: actions/checkout@v2
       - id: get-changed-file
         run: |
           $output=(git log -1 --format='%H')
