@@ -13,26 +13,36 @@ jobs:
   prepare:
     runs-on: self-hosted
     outputs:
-      changed-files: ${{ steps.get-changed-file.outputs.changed-file }}
+      commit: ${{ steps.prepare.outputs.commit }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: declare variables
+        run: |
+          echo "::set-output name=commit::$(git rev-parse HEAD)""
+          git diff-tree --no-commit-id --name-only -r $commitName | grep -i -v -E '.github' | grep .yml
+          
+          
+  get-changed-files:
+    runs-on: self-hosted
+    needs: prepare
+    outputs:
+      changed-files: ${{ steps.get-changed-files.outputs.changed-file }}
     steps:
       - id: get-changed-file
         run: |
-          commitName=$(git rev-parse HEAD)
-          git diff-tree --no-commit-id --name-only -r $commitName | grep -i -v -E '.github' | grep .yml
+          git diff-tree --no-commit-id --name-only -r ${{ needs.prepare.outputs.commit }} | grep -i -v -E '.github' | grep .yml
           echo "1"
           if [ $? == 0 ]
           then
-            echo "::set-output name=changed-file::$(git diff-tree --no-commit-id --name-only -r $commitName | grep -i -v -E '.github' | grep .yml)"
-            echo "Result: $(git diff-tree --no-commit-id --name-only -r $commitName | grep -i -v -E '.github' | grep .yml)"
-          fi
+            echo "::set-output name=changed-files::$(git diff-tree --no-commit-id --name-only -r ${{ needs.prepare.outputs.commit }} | grep -i -v -E '.github' | grep .yml)"
+            echo "Result: $(git diff-tree --no-commit-id --name-only -r ${{ needs.prepare.outputs.commit }} | grep -i -v -E '.github' | grep .yml)"
   deploy:
     runs-on: self-hosted
     needs: prepare
     steps:
-      - uses: actions/checkout@v2
       - name: down stack
         timeout-minutes: 3
-        run: docker-compose -f ${{ needs.prepare.outputs.changed-files }} down 
+        run: docker-compose -f ${{ needs.get-changed-files.outputs.changed-files }} down 
       - name: run stack
         timeout-minutes: 3
-        run: docker-compose -f ${{ needs.prepare.outputs.changed-files }} up 
+        run: docker-compose -f ${{ needs.get-changed-files.outputs.changed-files }} up 
