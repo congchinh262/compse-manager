@@ -22,7 +22,6 @@ jobs:
           
   get-changed-files:
     runs-on: self-hosted
-    needs: prepare
     outputs:
       changed-files: ${{ steps.get-changed-files.outputs.changed-file }}
     steps:
@@ -38,7 +37,7 @@ jobs:
             echo "Result: $(git diff-tree --no-commit-id --name-only -r $output | grep -i -v -E '.github' | grep .yml)"
   deploy:
     runs-on: self-hosted
-    needs: prepare
+    needs: get-changed-files
     steps:
       - name: down stack
         timeout-minutes: 3
