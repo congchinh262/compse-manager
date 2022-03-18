@@ -10,15 +10,15 @@ on:
   workflow_dispatch:
 
 jobs:
-  prepare:
-    runs-on: self-hosted
-    outputs:
-      commit: ${{ steps.prepare.outputs.commit }}
-    steps:
-      - uses: actions/checkout@v2
-      - id: declare-variables
-        run: |
-          echo "::set-output name=commit::$(git log -1 --format='%H')"
+  # prepare:
+  #   runs-on: self-hosted
+  #   outputs:
+  #     commit: ${{ steps.prepare.outputs.commit }}
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - id: declare-variables
+  #       run: |
+  #         echo "::set-output name=commit::$(git log -1 --format='%H')"
           
   get-changed-files:
     runs-on: self-hosted
@@ -28,12 +28,13 @@ jobs:
     steps:
       - id: get-changed-file
         run: |
-          git diff-tree --no-commit-id --name-only -r ${{ needs.prepare.outputs.commit }} | grep -i -v -E '.github' | grep .yml
+          $output=(git log -1 --format='%H')
+          git diff-tree --no-commit-id --name-only -r $output | grep -i -v -E '.github' | grep .yml
           echo "1"
           if [ $? == 0 ]
           then
-            echo "::set-output name=changed-files::$(git diff-tree --no-commit-id --name-only -r ${{ needs.prepare.outputs.commit }} | grep -i -v -E '.github' | grep .yml)"
-            echo "Result: $(git diff-tree --no-commit-id --name-only -r ${{ needs.prepare.outputs.commit }} | grep -i -v -E '.github' | grep .yml)"
+            echo "::set-output name=changed-files::$(git diff-tree --no-commit-id --name-only -r $output | grep -i -v -E '.github' | grep .yml)"
+            echo "Result: $(git diff-tree --no-commit-id --name-only -r $output | grep -i -v -E '.github' | grep .yml)"
   deploy:
     runs-on: self-hosted
     needs: prepare
