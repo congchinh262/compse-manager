@@ -16,7 +16,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  get-changed-files:
+  prepare:
     runs-on: self-hosted
     outputs:
       changed-files: ${{ steps.get-changed-file.outputs.changed-file }}
@@ -24,10 +24,10 @@ jobs:
       - id: get-changed-file
         run: echo "::set-output name=changed-file::$(git ls-files -c | grep -i -v -E '.github' | grep .yml)"
         if: 
-  run-stack:
+  deploy:
     # The type of runner that the job will run on
     runs-on: self-hosted
-    needs: get-changed-files
+    needs: prepare
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v2
@@ -35,7 +35,7 @@ jobs:
       # down stack should be remove when using docker swarm
       - name: down stack
         timeout-minutes: 3
-        run: docker-compose -f ${{ needs.get-changed-files.outputs.changed-files }} up 
+        run: docker-compose -f ${{ needs.prepare.outputs.changed-files }} down 
       - name: run stack
         timeout-minutes: 3
-        run: docker-compose -f ${{ needs.get-changed-files.outputs.changed-files }} up 
+        run: docker-compose -f ${{ needs.prepare.outputs.changed-files }} up 
