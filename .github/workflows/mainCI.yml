@@ -32,6 +32,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       # down stack before run new stack for prevent memory leak
+      # down stack should be remove when using docker swarm
       - name: down stack
         timeout-minutes: 3
         run: docker-compose -f ${{ needs.get-changed-files.outputs.changed-files }} up 
