@@ -1,10 +1,6 @@
-# This is a basic workflow to help you get started with Actions
-
 name: stack-manager-CI
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
   push:
     branches: [ main ]
   pull_request:
@@ -13,26 +9,24 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   prepare:
     runs-on: self-hosted
     outputs:
       changed-files: ${{ steps.get-changed-file.outputs.changed-file }}
     steps:
       - id: get-changed-file
-        run: echo "::set-output name=changed-file::$(git ls-files -m | grep -i -v -E '.github' | grep .yml)"
-        if: 
+        run: |
+          git ls-files -m | grep -i -v -E '.github' | grep .yml
+          if [ $? -gt 0 ]
+          then
+            echo "::set-output name=changed-file::$(git ls-files -m | grep -i -v -E '.github' | grep .yml)"
+          fi
   deploy:
-    # The type of runner that the job will run on
     runs-on: self-hosted
     needs: prepare
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v2
-      # down stack before run new stack for prevent memory leak
-      # down stack should be remove when using docker swarm
       - name: down stack
         timeout-minutes: 3
         run: docker-compose -f ${{ needs.prepare.outputs.changed-files }} down 
