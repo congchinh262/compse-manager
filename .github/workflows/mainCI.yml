@@ -18,7 +18,7 @@ jobs:
       - id: get-changed-file
         run: |
           git ls-files -m | grep -i -v -E '.github' | grep .yml
-          if [ $? -eq 0 ]
+          if [ $? == 0 ]
           then
             echo "::set-output name=changed-file::$(git ls-files -m | grep -i -v -E '.github' | grep .yml)"
           fi
