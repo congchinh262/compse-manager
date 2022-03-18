@@ -19,7 +19,7 @@ jobs:
       - id: declare-variables
         run: |
           echo "::set-output name=commit::$(git rev-parse HEAD)"
-          git diff-tree --no-commit-id --name-only -r $commitName | grep -i -v -E '.github' | grep .yml
+          git diff-tree --no-commit-id --name-only -r ${{ steps.prepare.outputs.commit }} | grep -i -v -E '.github' | grep .yml
           
           
   get-changed-files:
