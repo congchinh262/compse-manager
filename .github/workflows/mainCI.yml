@@ -16,7 +16,7 @@ jobs:
       commit: ${{ steps.prepare.outputs.commit }}
     steps:
       - uses: actions/checkout@v2
-      - id: declare variables
+      - id: declare-variables
         run: |
           echo "::set-output name=commit::$(git rev-parse HEAD)""
           git diff-tree --no-commit-id --name-only -r $commitName | grep -i -v -E '.github' | grep .yml
