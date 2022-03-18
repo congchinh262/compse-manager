@@ -24,7 +24,7 @@ jobs:
     runs-on: self-hosted
     needs: prepare
     outputs:
-      changed-files: ${{ steps.get-changed-file.outputs.changed-file }}
+      changed-files: ${{ steps.get-changed-file.outputs.changed-files }}
     steps:
       - uses: actions/checkout@v3
         with:
