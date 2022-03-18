@@ -19,6 +19,7 @@ jobs:
         run: |
           commitName=$(git rev-parse HEAD)
           git diff-tree --no-commit-id --name-only -r $commitName | grep -i -v -E '.github' | grep .yml
+          echo "1"
           if [ $? == 0 ]
           then
             echo "::set-output name=changed-file::$(git diff-tree --no-commit-id --name-only -r $commitName | grep -i -v -E '.github' | grep .yml)"
