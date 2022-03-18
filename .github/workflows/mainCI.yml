@@ -22,7 +22,7 @@ jobs:
       changed-files: ${{ steps.get-changed-file.outputs.changed-file }}
     steps:
       - id: get-changed-file
-        run: echo "::set-output name=changed-file::$(git ls-files -c | grep -i -v -E '.github' | grep .yml)"
+        run: echo "::set-output name=changed-file::$(git ls-files -m | grep -i -v -E '.github' | grep .yml)"
         if: 
   deploy:
     # The type of runner that the job will run on
