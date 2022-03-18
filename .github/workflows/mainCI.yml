@@ -22,17 +22,18 @@ jobs:
           
   get-changed-files:
     runs-on: self-hosted
+    needs: prepare
     outputs:
       changed-files: ${{ steps.get-changed-files.outputs.changed-file }}
     steps:
       - uses: actions/checkout@v2
       - id: get-changed-file
         run: |
-          git diff-tree --no-commit-id --name-only -r ${{ steps.prepare.outputs.commit }} | grep -i -v -E '.github' | grep .yml
+          git diff-tree --no-commit-id --name-only -r ${{ needs.steps.prepare.outputs.commit }} | grep -i -v -E '.github' | grep .yml
           echo "0"
           if [ $? == 0 ]
           then
-            echo "::set-output name=changed-files::$(git diff-tree --no-commit-id --name-only -r ${{ steps.prepare.outputs.commit }} | grep -i -v -E '.github' | grep .yml)"
+            echo "::set-output name=changed-files::$(git diff-tree --no-commit-id --name-only -r ${{ needs.steps.prepare.outputs.commit }} | grep -i -v -E '.github' | grep .yml)"
           fi
   deploy:
     runs-on: self-hosted
