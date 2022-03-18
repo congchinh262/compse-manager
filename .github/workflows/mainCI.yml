@@ -26,7 +26,9 @@ jobs:
     outputs:
       changed-files: ${{ steps.get-changed-file.outputs.changed-file }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: '0'
       - id: get-changed-file
         run: |
           git diff-tree --no-commit-id --name-only -r ${{ needs.prepare.outputs.commit }} | grep -i -v -E '.github' | grep .yml
