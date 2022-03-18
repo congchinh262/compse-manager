@@ -18,30 +18,31 @@ jobs:
       - uses: actions/checkout@v2
       - id: declare-variables
         run: |
-          echo "::set-output name=commit::$(git log -1 --format='%H')"
+          # echo "::set-output name=commit::$(git log -1 --format='%H')"
+          echo "$(git log -1 --format='%H')"
           
-  get-changed-files:
-    runs-on: self-hosted
-    needs: prepare
-    outputs:
-      changed-files: ${{ steps.get-changed-files.outputs.changed-file }}
-    steps:
-      - uses: actions/checkout@v2
-      - id: get-changed-file
-        run: |
-          git diff-tree --no-commit-id --name-only -r ${{ needs.steps.prepare.outputs.commit }} | grep -i -v -E '.github' | grep .yml
-          echo "0"
-          if [ $? == 0 ]
-          then
-            echo "::set-output name=changed-files::$(git diff-tree --no-commit-id --name-only -r ${{ needs.steps.prepare.outputs.commit }} | grep -i -v -E '.github' | grep .yml)"
-          fi
-  deploy:
-    runs-on: self-hosted
-    needs: get-changed-files
-    steps:
-      - name: down stack
-        timeout-minutes: 3
-        run: docker-compose -f ${{ needs.get-changed-files.outputs.changed-files }} down 
-      - name: run stack
-        timeout-minutes: 3
-        run: docker-compose -f ${{ needs.get-changed-files.outputs.changed-files }} up 
+  # get-changed-files:
+  #   runs-on: self-hosted
+  #   needs: prepare
+  #   outputs:
+  #     changed-files: ${{ steps.get-changed-files.outputs.changed-file }}
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - id: get-changed-file
+  #       run: |
+  #         git diff-tree --no-commit-id --name-only -r ${{ needs.steps.prepare.outputs.commit }} | grep -i -v -E '.github' | grep .yml
+  #         echo "0"
+  #         if [ $? == 0 ]
+  #         then
+  #           echo "::set-output name=changed-files::$(git diff-tree --no-commit-id --name-only -r ${{ needs.steps.prepare.outputs.commit }} | grep -i -v -E '.github' | grep .yml)"
+  #         fi
+  # deploy:
+  #   runs-on: self-hosted
+  #   needs: get-changed-files
+  #   steps:
+  #     - name: down stack
+  #       timeout-minutes: 3
+  #       run: docker-compose -f ${{ needs.get-changed-files.outputs.changed-files }} down 
+  #     - name: run stack
+  #       timeout-minutes: 3
+  #       run: docker-compose -f ${{ needs.get-changed-files.outputs.changed-files }} up 
