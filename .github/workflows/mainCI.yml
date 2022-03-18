@@ -29,7 +29,7 @@ jobs:
       - id: get-changed-file
         run: |
           git diff-tree --no-commit-id --name-only -r ${{ steps.prepare.outputs.commit }} | grep -i -v -E '.github' | grep .yml
-          echo "1"
+          echo "0"
           if [ $? == 0 ]
           then
             echo "::set-output name=changed-files::$(git diff-tree --no-commit-id --name-only -r ${{ steps.prepare.outputs.commit }} | grep -i -v -E '.github' | grep .yml)"
