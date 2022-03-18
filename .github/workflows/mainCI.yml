@@ -17,12 +17,12 @@ jobs:
     steps:
       - id: get-changed-file
         run: |
-          commitName=`git rev-parse HEAD`
-          git diff-tree --no-commit-id --name-only -r $commitName
+          # commitName=`git rev-parse HEAD`
+          git diff-tree --no-commit-id --name-only -r $(git rev-parse HEAD) | grep -i -v -E '.github' | grep .yml
           if [ $? == 0 ]
           then
-            echo "::set-output name=changed-file::$(git diff-tree --no-commit-id --name-only -r $commitName)"
-            echo "Result: $(git diff-tree --no-commit-id --name-only -r $commitName)"
+            echo "::set-output name=changed-file::$(git diff-tree --no-commit-id --name-only -r $commitName | grep -i -v -E '.github' | grep .yml)"
+            echo "Result: $(git diff-tree --no-commit-id --name-only -r $commitName | grep -i -v -E '.github' | grep .yml)"
           fi
   deploy:
     runs-on: self-hosted
