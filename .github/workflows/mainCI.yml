@@ -25,7 +25,7 @@ jobs:
     needs: prepare
     outputs:
       changed-files: ${{ steps.get-changed-file.outputs.changed-files }}
-      stack-name: $ {{ steps.get-stack-name.outputs.stack-name }}
+      stack: $ {{ steps.get-stack-name.outputs.stack }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -43,10 +43,11 @@ jobs:
           if [ $? == 0 ]
           then
             # echo "result $(dirname ${{ steps.get-changed-file.outputs.changed-files }} | awk '{print $1"-dev"}')"
-            echo "::set-output name=stack-name::$(dirname ${{ steps.get-changed-file.outputs.changed-files }} | awk '{print $1"-dev"}')"
+            echo "::set-output name=stack::$(dirname ${{ steps.get-changed-file.outputs.changed-files }} | awk '{print $1"-dev"}')"
+            # echo "::set-output name=stack-name::$(dirname ${{ steps.get-changed-file.outputs.changed-files }} | awk '{print $1"-dev"}')"
           fi
       - id: test
-        run: echo ${{ steps.get-stack-file.outputs.stack-name }}
+        run: echo ${{ steps.get-stack-file.outputs.stack }}
           
   deploy:
     runs-on: self-hosted
@@ -55,4 +56,4 @@ jobs:
       - name: deploy stack
         timeout-minutes: 5
         #run: docker stack deploy --compose-file ${{ needs.get-changed-files.outputs.changed-files }} ${{ needs.get-changed-files.outputs.stack-name }}
-        run: echo ${{ needs.get-changed-files.outputs.stack-name }}
+        run: echo ${{ needs.get-changed-files.outputs.stack }}
