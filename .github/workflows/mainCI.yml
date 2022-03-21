@@ -51,4 +51,5 @@ jobs:
     steps:
       - name: deploy stack
         timeout-minutes: 5
-        run: docker stack deploy --compose-file ${{ needs.get-changed-files.outputs.changed-files }} ${{ needs.get-changed-files.outputs.stack-name }}
+        #run: docker stack deploy --compose-file ${{ needs.get-changed-files.outputs.changed-files }} ${{ needs.get-changed-files.outputs.stack-name }}
+        run: echo ${{ needs.get-changed-files.outputs.stack-name }}
