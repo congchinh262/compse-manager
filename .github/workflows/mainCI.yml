@@ -25,7 +25,7 @@ jobs:
     needs: prepare
     outputs:
       changed-files: ${{ steps.get-changed-file.outputs.changed-files }}
-      change-file-dir: $ {{ steps.get-stack-name.outputs.stack-name }}
+      stack-name: $ {{ steps.get-stack-name.outputs.stack-name }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -51,4 +51,4 @@ jobs:
     steps:
       - name: deploy stack
         timeout-minutes: 5
-        run: docker stack deploy --compose-file ${{ needs.get-changed-files.outputs.changed-files }} 
+        run: docker stack deploy --compose-file ${{ needs.get-changed-files.outputs.changed-files }} ${{ needs.get-changed-files.outputs.stack-name }}
