@@ -40,9 +40,6 @@ jobs:
     runs-on: self-hosted
     needs: get-changed-files
     steps:
-      - name: down stack
-        timeout-minutes: 3
-        run: docker-compose -f ${{ needs.get-changed-files.outputs.changed-files }} down 
-      - name: run stack
-        timeout-minutes: 3
-        run: docker-compose -f ${{ needs.get-changed-files.outputs.changed-files }} up 
+      - name: deploy stack
+        timeout-minutes: 5
+        run: docker stack deploy --compose-file ${{ needs.get-changed-files.outputs.changed-files }} 
