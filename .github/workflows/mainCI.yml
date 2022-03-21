@@ -36,6 +36,9 @@ jobs:
           then
             echo "::set-output name=changed-files::$(git diff-tree --no-commit-id --name-only -r ${{ needs.prepare.outputs.commit }} | grep -i -v -E '.github' | grep .yml | tr "\n" " ")"
           fi
+      - id: get-stack-name
+        run: |
+          
   deploy:
     runs-on: self-hosted
     needs: get-changed-files
