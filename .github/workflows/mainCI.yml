@@ -42,11 +42,10 @@ jobs:
           echo ${{ steps.get-changed-file.outputs.changed-files }} | grep dev
           if [ $? == 0 ]
           then
-            echo "kaka"
             echo ''::set-output name=stack::$(dirname ${{ steps.get-changed-file.outputs.changed-files }} | awk '{print $1"-dev"}')''
           fi
       - id: test
-        run: echo ${{ steps.get-stack-file.outputs.stack }}
+        run: echo ${{ steps.get-stack-name.outputs.stack }}
           
   deploy:
     runs-on: self-hosted
