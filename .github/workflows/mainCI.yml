@@ -25,7 +25,7 @@ jobs:
     needs: prepare
     outputs:
       changed-files: ${{ steps.get-changed-file.outputs.changed-files }}
-      change-file-dir: $ {{ steps.get-stack-name }}
+      change-file-dir: $ {{ steps.get-stack-name.outputs.stack-name }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -39,7 +39,7 @@ jobs:
           fi
       - id: get-stack-name
         run: |
-          echo ${{ get-changed-files.outputs.changed-files }} | grep dev
+          echo ${{ steps.get-changed-file.outputs.changed-files }} | grep dev
           if[ $? == 0 ]
           then
             echo "::set-output name=stack-name::$(dirname ${{ get-changed-files.outputs.changed-files }} | awk '{print $1"-dev"}')"
