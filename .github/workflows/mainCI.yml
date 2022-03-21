@@ -42,8 +42,8 @@ jobs:
           echo ${{ steps.get-changed-file.outputs.changed-files }} | grep dev
           if [ $? == 0 ]
           then
-            echo "result $(dirname ${{ steps.get-changed-file.outputs.changed-files }} | awk '{print $1"-dev"}')"
-            # echo "::set-output name=stack-name::$(dirname ${{ steps.get-changed-file.outputs.changed-files }} | awk '{print $1"-dev"}')"
+            # echo "result $(dirname ${{ steps.get-changed-file.outputs.changed-files }} | awk '{print $1"-dev"}')"
+            echo "::set-output name=stack-name::$(dirname ${{ steps.get-changed-file.outputs.changed-files }} | awk '{print $1"-dev"}')"
           fi
           
   deploy:
@@ -53,4 +53,4 @@ jobs:
       - name: deploy stack
         timeout-minutes: 5
         #run: docker stack deploy --compose-file ${{ needs.get-changed-files.outputs.changed-files }} ${{ needs.get-changed-files.outputs.stack-name }}
-        run: echo ${{ needs.get-changed-files.outputs.changed-files }}
+        run: echo ${{ needs.get-changed-files.outputs.stack-name }}
