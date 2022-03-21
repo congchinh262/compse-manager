@@ -40,7 +40,7 @@ jobs:
       - id: get-stack-name
         run: |
           echo ${{ steps.get-changed-file.outputs.changed-files }} | grep dev
-          if[ $? == 0 ]
+          if [ $? == 0 ]
           then
             echo "::set-output name=stack-name::$(dirname ${{ steps.get-changed-file.outputs.changed-files }} | awk '{print $1"-dev"}')"
           fi
