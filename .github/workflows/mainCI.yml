@@ -39,10 +39,12 @@ jobs:
           fi
       - id: get-stack-name
         run: |
-          echo ${{ steps.get-changed-file.outputs.changed-files }} | grep dev
-          if [ $? == 0 ]
+          # echo ${{ steps.get-changed-file.outputs.changed-files }} | grep dev
+          if [ -z $(echo ${{ steps.get-changed-file.outputs.changed-files }} | grep prod) ]
           then
             echo ''::set-output name=stack::$(dirname ${{ steps.get-changed-file.outputs.changed-files }} | awk '{print $1"-dev"}')''
+          else
+            echo ''::set-output name=stack::$(dirname ${{ steps.get-changed-file.outputs.changed-files }} | awk '{print $1"-prod"}')''
           fi
           
   deploy:
