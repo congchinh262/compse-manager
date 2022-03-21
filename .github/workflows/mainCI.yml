@@ -40,12 +40,10 @@ jobs:
       - id: get-stack-name
         run: |
           echo ${{ steps.get-changed-file.outputs.changed-files }} | grep dev
-          echo "::set-output name=stack::$(dirname ${{ steps.get-changed-file.outputs.changed-files }} | awk '{print $1"-dev"}')"
           if [ $? == 0 ]
           then
             echo "kaka"
-            # echo "result $(dirname ${{ steps.get-changed-file.outputs.changed-files }} | awk '{print $1"-dev"}')"
-            # echo "::set-output name=stack-name::$(dirname ${{ steps.get-changed-file.outputs.changed-files }} | awk '{print $1"-dev"}')"
+            echo ''::set-output name=stack::$(dirname ${{ steps.get-changed-file.outputs.changed-files }} | awk '{print $1"-dev"}')''
           fi
       - id: test
         run: echo ${{ steps.get-stack-file.outputs.stack }}
