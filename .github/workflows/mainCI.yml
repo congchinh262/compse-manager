@@ -34,7 +34,7 @@ jobs:
           git diff-tree --no-commit-id --name-only -r ${{ needs.prepare.outputs.commit }} | grep -i -v -E '.github' | grep .yml
           if [ $? == 0 ]
           then
-            echo "::set-output name=changed-files::$(git diff-tree --no-commit-id --name-only -r ${{ needs.prepare.outputs.commit }} | grep -i -v -E '.github' | grep .yml)"
+            echo "::set-output name=changed-files::$(git diff-tree --no-commit-id --name-only -r ${{ needs.prepare.outputs.commit }} | grep -i -v -E '.github' | grep .yml | tr "\n" " ")"
           fi
   deploy:
     runs-on: self-hosted
