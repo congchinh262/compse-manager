@@ -44,8 +44,6 @@ jobs:
           then
             echo ''::set-output name=stack::$(dirname ${{ steps.get-changed-file.outputs.changed-files }} | awk '{print $1"-dev"}')''
           fi
-      - id: test
-        run: echo ${{ steps.get-stack-name.outputs.stack }}
           
   deploy:
     runs-on: self-hosted
@@ -53,5 +51,5 @@ jobs:
     steps:
       - name: deploy stack
         timeout-minutes: 5
-        #run: docker stack deploy --compose-file ${{ needs.get-changed-files.outputs.changed-files }} ${{ needs.get-changed-files.outputs.stack-name }}
-        run: echo ${{ needs.get-changed-files.outputs.stack }}
+        run: docker stack deploy --compose-file ${{ needs.get-changed-files.outputs.changed-files }} ${{ needs.get-changed-files.outputs.stack }}
+        
