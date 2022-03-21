@@ -45,6 +45,8 @@ jobs:
             # echo "result $(dirname ${{ steps.get-changed-file.outputs.changed-files }} | awk '{print $1"-dev"}')"
             echo "::set-output name=stack-name::$(dirname ${{ steps.get-changed-file.outputs.changed-files }} | awk '{print $1"-dev"}')"
           fi
+      - id: test
+        run: echo ${{ steps.get-stack-file.outputs.stack-name }}
           
   deploy:
     runs-on: self-hosted
