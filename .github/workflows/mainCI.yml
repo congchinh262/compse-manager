@@ -10,48 +10,13 @@ on:
   workflow_dispatch:
 
 jobs:
-  prepare:
-    runs-on: self-hosted
-    outputs:
-      commit: ${{ steps.declare-variables.outputs.commit }}
-    steps:
-      - uses: actions/checkout@v2
-      - id: declare-variables
-        run: |
-          echo "::set-output name=commit::$(git log -1 --format='%H')"
-          
-  get-changed-files:
-    runs-on: self-hosted
-    needs: prepare
-    outputs:
-      changed-files: ${{ steps.get-changed-file.outputs.changed-files }}
-      stack: ${{ steps.get-stack-name.outputs.stack }}
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: '0'
-      - id: get-changed-file
-        run: |
-          git diff-tree --no-commit-id --name-only -r ${{ needs.prepare.outputs.commit }} | grep -i -v -E '.github' | grep .yml
-          if [ $? == 0 ]
-          then
-            echo "::set-output name=changed-files::$(git diff-tree --no-commit-id --name-only -r ${{ needs.prepare.outputs.commit }} | grep -i -v -E '.github' | grep .yml | tr "\n" " ")"
-          fi
-      - id: get-stack-name
-        run: |
-          # echo ${{ steps.get-changed-file.outputs.changed-files }} | grep dev
-          if [ -z $(echo ${{ steps.get-changed-file.outputs.changed-files }} | grep prod) ]
-          then
-            echo ''::set-output name=stack::$(dirname ${{ steps.get-changed-file.outputs.changed-files }} | awk '{print $1"-dev"}')''
-          else
-            echo ''::set-output name=stack::$(dirname ${{ steps.get-changed-file.outputs.changed-files }} | awk '{print $1"-prod"}')''
-          fi
-          
   deploy:
     runs-on: self-hosted
-    needs: get-changed-files
     steps:
       - name: deploy stack
         timeout-minutes: 5
-        run: docker stack deploy --compose-file ${{ needs.get-changed-files.outputs.changed-files }} ${{ needs.get-changed-files.outputs.stack }}
-        
+        run: |
+          set -ex
+          for item in $(git diff HEAD^ --name-only | grep -oP '^([A-z0-9-]+)(?=/)' | uniq); do
+            docker stack deploy --compose-file ${item}/stack.yml --prune --with-registry-auth ${item}
+          done
