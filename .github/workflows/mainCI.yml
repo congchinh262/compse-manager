@@ -21,5 +21,8 @@ jobs:
         run: |
           set -ex
           for item in $(git diff HEAD^ --name-only | grep -oP '^([A-z0-9-]+)(?=/)' | uniq); do
+            if [ -f ${item}/.env ]; then
+              eval "$(cat .env | xargs -n 1 echo echo export | bash)"
+            fi
             docker stack deploy --compose-file ${item}/stack.yml --prune --with-registry-auth ${item}
           done
