@@ -17,6 +17,6 @@ jobs:
         timeout-minutes: 5
         run: |
           set -ex
-          for item in $(git diff HEAD^ --no-index --name-only | grep -oP '^([A-z0-9-]+)(?=/)' | uniq); do
+          for item in $(git diff HEAD^ --name-only | grep -oP '^([A-z0-9-]+)(?=/)' | uniq); do
             docker stack deploy --compose-file ${item}/stack.yml --prune --with-registry-auth ${item}
           done
