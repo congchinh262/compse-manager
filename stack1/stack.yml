@@ -2,6 +2,4 @@ version: '3.6'
 
 services:
   web:
-    image: ${IMAGE}
-    enviroment:
-      DUMMY: ${DUMMY}
+    image: nginx
