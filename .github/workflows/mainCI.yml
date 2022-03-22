@@ -16,6 +16,9 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: '0'
+      - name: set enviroment variables
+        run: |
+          export DUMMY_TEXT=${{ secrets.DUMMY_TEXT }}
       - name: deploy stack
         timeout-minutes: 5
         run: |
@@ -24,5 +27,6 @@ jobs:
             if [ -f ${item}/.env ]; then
               eval "$(cat .env | xargs -n 1 echo echo export | bash)"
             fi
+            echo $DUMMY_TEXT
             docker stack deploy --compose-file ${item}/stack.yml --prune --with-registry-auth ${item}
           done
